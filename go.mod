@@ -3,7 +3,7 @@ module github.com/Twibbonize/go-getter-boilerplate
 go 1.22.2
 
 require (
-	github.com/Twibbonize/go-module-boilerplate-mongodb v0.0.3
+	github.com/Twibbonize/go-module-boilerplate-mongodb v0.0.5
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/redis/go-redis/v9 v9.7.0
 )

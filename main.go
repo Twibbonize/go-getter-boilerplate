@@ -103,12 +103,12 @@ func main() {
 	}))
 
 	app.Get("/:uuid", func(c *fiber.Ctx) error {
-		anyModuleGetter := moduleboilerplate.NewGetterLib(redisClient)
+		anyModuleGetter := moduleboilerplate.NewGetterLib(&redisClient)
 		return GetOne(c, *anyModuleGetter)
 	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		anyModuleGetter := moduleboilerplate.NewGetterLib(redisClient)
+		anyModuleGetter := moduleboilerplate.NewGetterLib(&redisClient)
 		return GetMany(c, *anyModuleGetter)
 	})
 
