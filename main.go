@@ -1,16 +1,21 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"io"
 	"log"
 	"log/slog"
+	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	moduleboilerplate "github.com/Twibbonize/go-module-boilerplate-mongodb"
 
@@ -19,6 +24,7 @@ import (
 
 const (
 	blank = ""
+	LAMBDA_ENDPOINT = ""
 )
 
 type SuccessullResponse struct {
@@ -78,6 +84,40 @@ func connectRedis() redis.UniversalClient {
 	}
 
 	return client
+}
+
+func establishGRPC() (*grpc.ClientConn, context.Context, context.CancelFunc) {
+
+	grpcServerAddr := os.Getenv("GIN_SETTER_GRPC_HOST")
+
+	grpcConnection, errorDialGRPC := grpc.Dial(grpcServerAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	if errorDialGRPC != nil {
+
+		log.Fatalf("did not connect: %v", errorDialGRPC)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	return grpcConnection, ctx, cancel
+}
+
+// Utility function to perform POST requests
+func PerformPostRequest(url string, jsonBody string) *http.Response {
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer([]byte(jsonBody)))
+	if err != nil {
+		log.Fatalf("Failed to create request: %v", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	if err != nil {
+		log.Fatalf("Failed to execute request: %v", err)
+	}
+
+	return resp
 }
 
 func main() {

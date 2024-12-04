@@ -1,0 +1,42 @@
+syntax = "proto3";
+package anymodule_proto;
+
+option go_package = "./protos";
+
+service Setter {
+	rpc SeedOneByRandId(IngestRequestByRandId) returns (AnyModuleIngestStatus) {}
+	rpc SeedOneByUUID(IngestRequestByUUID) returns (AnyModuleIngestStatus) {}
+	rpc SeedMany(IngestRequest) returns (AnyModuleIngestStatus) {}
+	rpc DeleteManyByAnyUUID(DeleteAllRequest) returns (AnyModuleIngestStatus) {}
+}
+
+message IngestRequestByRandId {
+    string RandId = 1;
+}
+
+message IngestRequestByUUID {
+    string Uuid = 1;
+}
+
+
+message DeleteAllRequest {
+	string Uuid = 1;
+}
+
+message IngestRequest { 
+    string anyUUID = 1;
+    int64 RetrievedLength = 2;
+    string LastObjectIdHex = 3;
+    string ValidLastUUID = 4;
+}
+
+message AnyModuleIngestStatus {
+	EnumStatus Status = 1;  
+}
+
+enum EnumStatus {
+    FAIL = 0;
+    SUCCESS = 1;
+    BLANK = 2;
+    LAST_PAGE = 3;
+}
