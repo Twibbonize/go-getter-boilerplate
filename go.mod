@@ -5,7 +5,7 @@ go 1.22.7
 toolchain go1.22.10
 
 require (
-	github.com/Twibbonize/go-module-boilerplate-mongodb v0.0.5
+	github.com/Twibbonize/go-module-boilerplate-mongodb v0.0.6
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/redis/go-redis/v9 v9.7.0
 	google.golang.org/grpc v1.68.0

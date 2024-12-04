@@ -21,7 +21,7 @@ func GetOne(c *fiber.Ctx, anyModuleGetter moduleboilerplate.GetterLib) error {
 	}
 
 	// Try to fetch the entity from the cache
-	entity, err := anyModuleGetter.GetByRandID(req.RandID)
+	entity, err := anyModuleGetter.Get(req.RandID)
 	if err != nil {
 		grpcConnection, ctx, cancel := establishGRPC()
 		client := pb_anymodule.NewSetterClient(grpcConnection)
@@ -48,7 +48,7 @@ func GetOne(c *fiber.Ctx, anyModuleGetter moduleboilerplate.GetterLib) error {
 		}
 
 		// Retry fetching
-		entity, err = anyModuleGetter.GetByRandID(req.RandID)
+		entity, err = anyModuleGetter.Get(req.RandID)
 		if err != nil {
 			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "Entity not found after fallback"})
 		}
@@ -68,6 +68,7 @@ func GetMany(c *fiber.Ctx, anyModuleGetter moduleboilerplate.GetterLib) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
+	// TODO check settled
 	entities, validLastUUID, _, err := anyModuleGetter.GetLinked(req.AnyUUID, req.LastRandID)
 	if err != nil || len(entities) == 0 {
 		grpcConnection, ctx, cancel := establishGRPC()
